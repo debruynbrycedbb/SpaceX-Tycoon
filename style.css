@@ -204,6 +204,36 @@ h3:first-child { margin-top: 0; }
   .lh-ctl .btn { padding: 18px 2px; }
 }
 
+/* ---------- control room mode: the 3D view fills the window and panels float over it ---------- */
+#crosshair, #roomPrompt, #roomKeys, #dockBar { display: none; }
+body.room { overflow: hidden; }
+body.room #layout { display: block; padding: 0; max-width: none; }
+body.room #left, body.room #right { display: contents; }
+body.room #scene { position: fixed; inset: 0; width: 100vw; height: 100vh; aspect-ratio: auto; border: 0; box-shadow: none; z-index: 1; }
+body.room #gl { cursor: crosshair; }
+body.room #topbar { position: fixed; left: 0; right: 0; top: 0; z-index: 30; background: rgba(8,16,48,.78); border-bottom-width: 2px; }
+body.room #stages { position: fixed; left: 50%; transform: translateX(-50%); bottom: 10px; width: min(860px, 94vw); z-index: 25; opacity: .93; }
+body.room .stage { min-height: 54px; background: rgba(12,21,53,.86); }
+body.room .feed-wrap, body.room #foot, body.room #tabs, body.room #panel { display: none; }
+body.room #sceneTag, body.room #sceneCount { top: 78px; }
+body.room #sceneCaption { display: none; }
+body.room #sceneFx.flash { display: none; } /* no full-screen flash at liftoff inside the room */
+body.room #loadNote { bottom: 84px; }
+body.room #summary { left: auto; right: 16px; top: 84px; transform: none; width: 340px; }
+body.room.docked #summary { right: auto; left: 16px; }
+body.room .sep { bottom: 96px; }
+body.room .lhud { padding: 118px 16px 84px; }
+body.room #crosshair { display: block; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; background: rgba(255,255,255,.75); box-shadow: 0 0 0 2px rgba(2,4,12,.6); pointer-events: none; }
+body.room.docked #crosshair, body.room #scene.playing #crosshair { display: none; }
+body.room #scene.playing #roomPrompt, body.room #scene.playing #roomKeys { display: none; }
+body.room #roomPrompt { display: block; position: absolute; left: 50%; bottom: 112px; transform: translateX(-50%); max-width: 90%; font-size: 24px; color: var(--text); background: rgba(5,10,28,.84); border: 2px solid var(--flame); padding: 6px 14px; pointer-events: none; white-space: nowrap; }
+body.room #roomPrompt:empty { display: none; }
+body.room #roomPrompt b { font-family: var(--px); font-size: 11px; font-weight: 400; color: #081030; background: var(--flame); padding: 4px 7px; margin-right: 6px; }
+body.room #roomKeys { display: block; position: absolute; left: 12px; bottom: 84px; font-size: 17px; color: var(--dim); text-shadow: 1px 1px 0 #02040c; pointer-events: none; }
+body.room.docked #dockBar { display: flex; align-items: center; justify-content: space-between; position: fixed; right: 16px; top: 78px; width: 460px; z-index: 26; background: var(--flame); color: #081030; padding: 5px 8px 5px 12px; font-family: var(--px); font-size: 9px; text-transform: uppercase; }
+body.room.docked #tabs { display: grid; position: fixed; right: 16px; top: 116px; width: 460px; z-index: 26; }
+body.room.docked #panel { display: block; position: fixed; right: 16px; top: 160px; bottom: 84px; width: 460px; overflow-y: auto; z-index: 26; background: rgba(12,21,53,.95); }
+
 /* ---------- stage tracker ---------- */
 #stages { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
 .stage { background: var(--panel); border: 2px solid var(--line); padding: 7px 6px 6px; min-height: 66px; display: flex; flex-direction: column; gap: 4px; }

@@ -14,7 +14,7 @@ const host = document.getElementById('scene'), canvas = document.getElementById(
 
 // ---------- layout of the world (metres) ----------
 const ROCKET_Y = 5.2;                           // top of the launch mount
-const LZ = new THREE.Vector3(-900, 0, 500);     // landing zone on shore
+const LZ = new THREE.Vector3(420, 0, -260);     // landing zone on shore, in view of the control room
 const SHIP = new THREE.Vector3(9000, 0, 800);   // drone ship out at sea
 const UP = new THREE.Vector3(0, 1, 0);
 const SUN_GROUND = new THREE.Vector3(-0.5, 0.3, 0.81).normalize();
@@ -30,7 +30,7 @@ try {
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.2;
 scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000004);
+renderer.setClearColor(0x000004, 1); // no scene.background: the control room draws the world and the room as two passes
 camera = new THREE.PerspectiveCamera(42, 1.5, 2, 90000);
 scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 sun = new THREE.DirectionalLight(new THREE.Color(1.0, 0.86, 0.68), 1.8); scene.add(sun, sun.target);
@@ -38,7 +38,8 @@ hemi = new THREE.HemisphereLight(0x8fb0ff, 0x4d4338, 0.45); scene.add(hemi);
 const fog = new THREE.FogExp2(new THREE.Color(0.36, 0.47, 0.72).convertLinearToSRGB().getHex(), 4.5e-5);
 
 composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4 }));
-composer.addPass(new RenderPass(scene, camera));
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
 bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.55, 0.75, 2.4);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
@@ -483,14 +484,25 @@ function frame(now) {
   if (document.hidden || !V.ready) return;
   const dt = Math.min(0.1, (now - last) / 1000); last = now; clock += dt;
   resize();
-  const I = V.force ? Object.assign({ p: 0, ship: false, m: { id: -5, count: 12, landQ: 'ok' } }, V.force) : Game.info();
+  let I = V.force ? Object.assign({ p: 0, ship: false, m: { id: -5, count: 12, landQ: 'ok' } }, V.force) : Game.info();
+  if (V.roomInfo) I = V.roomInfo(I);
   update(I, dt, clock);
   if (V.cam) { camera.position.fromArray(V.cam.pos); camera.fov = V.cam.fov || 40; camera.lookAt(look.fromArray(V.cam.look)); camera.updateProjectionMatrix(); sky.position.copy(camera.position); } // debug camera
-  const scale = renderer.domElement.height / (2 * Math.tan(camera.fov * Math.PI / 360));
-  smoke.mat.uniforms.uScale.value = fire.mat.uniforms.uScale.value = scale;
   smoke.update(dt); fire.update(dt);
+  if (V.roomFrame && V.roomFrame(I, dt, clock)) return; // the control room drew this frame
+  setPuffScale(renderer.domElement.height, camera.fov);
   composer.render();
 }
+function setPuffScale(pixelHeight, fov) { smoke.mat.uniforms.uScale.value = fire.mat.uniforms.uScale.value = pixelHeight / (2 * Math.tan(fov * Math.PI / 360)); }
+
+// ---------- shared with the control room (room.js) ----------
+let readyResolve;
+export const ctx = {
+  THREE, V, renderer, composer, renderPass, scene, camera, ground, space, globe, actors, sky, skyMat, stars, starMat, fog, sun, hemi, smoke, fire,
+  SUN_GROUND, ROCKET_Y, LZ, SETS, setPuffScale,
+  parts: () => ({ booster, upper, strongPivot, earthHolder, sepY, boosterFlame, upperFlame }),
+  ready: new Promise(r => { readyResolve = r; }),
+};
 
 // ---------- loading ----------
 const manager = new THREE.LoadingManager();
@@ -500,5 +512,6 @@ note.textContent = 'Loading 3D models';
 Promise.all([get('falcon9'), get('strongback'), get('starlink'), get('earth')]).then(([falcon, sb, sat, earth]) => {
   buildGround(); setupRocket(falcon); setupStrongback(sb); setupStarlink(sat); setupEarth(earth);
   resize(); note.textContent = ''; V.ready = true; V.three = { THREE, scene, camera, booster, upper, legs };
+  readyResolve();
 }).catch(e => { console.warn('3D view unavailable, using 2D art.', e); note.textContent = ''; V.error = String(e); });
 requestAnimationFrame(frame);

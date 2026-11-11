@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
 <header id="topbar">
@@ -21,6 +21,7 @@
     <div class="stat"><span class="stat-label">Income</span><span class="stat-value" id="statIncome">$0/s</span></div>
     <div class="stat"><span class="stat-label">Active sats</span><span class="stat-value" id="statSats">0</span></div>
   </div>
+  <button class="btn btn-ghost" id="roomBtn" data-act="room" hidden>Dashboard view</button>
   <button class="btn btn-ghost" id="muteBtn" data-act="mute" aria-label="Toggle sound">SOUND ON</button>
 </header>
 
@@ -42,6 +43,9 @@
       <div id="sceneCaption"></div>
       <div id="loadNote"></div>
       <div id="hud"></div>
+      <div id="crosshair" aria-hidden="true"></div>
+      <div id="roomPrompt"></div>
+      <div id="roomKeys"></div>
       <div id="summary" hidden></div>
     </div>
     <ol id="stages" aria-label="Mission stages"></ol>
@@ -52,21 +56,26 @@
   </section>
 
   <section id="right">
+    <div id="dockBar"><span>Console open</span><button class="btn btn-small" data-act="undock">Step away (E)</button></div>
     <nav id="tabs" role="tablist"></nav>
     <div id="panel"></div>
   </section>
 </main>
 
 <footer id="foot">
-  <span>Fan-made prototype. Not affiliated with or endorsed by SpaceX. 3D models by Stanley Creative, rodrigoscar, Thor's Hammer and Malacodart on Sketchfab, CC BY 4.0. <a href="https://github.com/debruynbrycedbb/SpaceX-Tycoon#credits">Credits</a></span>
+  <span>Fan-made prototype. Not affiliated with or endorsed by SpaceX. 3D models by Stanley Creative, rodrigoscar, Thor's Hammer, Malacodart and Mixmamo.studio on Sketchfab, CC BY 4.0. <a href="https://github.com/debruynbrycedbb/SpaceX-Tycoon#credits">Credits</a></span>
   <button class="btn btn-ghost btn-small" data-act="reset">Reset save</button>
 </footer>
 
-<script src="game.js?v=12"></script>
+<script src="game.js?v=24"></script>
 <!-- 3D mission view. If it cannot load, the game keeps working with the 2D art. -->
 <script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+  "tycoon/view3d": "./view3d.js?v=24"
+} }
 </script>
-<script type="module" src="view3d.js?v=12"></script>
+<script type="module" src="room.js?v=24"></script>
 </body>
 </html>

@@ -181,6 +181,9 @@ const ACT = {
     Sfx.click();
   },
   sep() { sepPress(); },
+  room() { S.roomOff = !S.roomOff; Sfx.click(); },
+  undock() { if (window.Room) window.Room.undock(); },
+  noop() { Sfx.deny(); },
   refuel(x) { startRefuel(booster(x), true); },
   repair(x) { const b = booster(x); if (b && b.state === 'damaged' && spend(BASE.repairCost)) { b.state = 'repairing'; b.t = b.dur = BASE.repairTime; log(`Booster B${b.id} sent for repairs (${money(BASE.repairCost)}).`); Sfx.buy(); } },
   auto() { S.autoRefuel = !S.autoRefuel; Sfx.click(); },
@@ -197,6 +200,12 @@ const ACT = {
   dismiss() { ui.summary = null; },
   reset() { if (confirm('Erase your save and start a new company?')) { localStorage.removeItem(SAVE_KEY); S = newState(); ui.pad = 1; ui.summary = null; ui.focus = null; log('New company founded. 10 satellites are waiting in the warehouse.'); } },
 };
+// What the launch button would do right now, for the control room console.
+function launchState() {
+  const p = pad(ui.pad) || S.pads[0], b = booster(p.booster), n = loaded(p);
+  const why = p.state === 'prep' ? 'Countdown in progress' : p.state !== 'idle' ? 'Rocket is clearing the tower' : !b ? 'Waiting for a ready booster' : n < 1 ? 'Load satellites at the payload console first' : '';
+  return { ok: !why, why, pad: p, booster: b, n, cap: capFor(p) };
+}
 function fillPlan(p, i) {
   const room = capFor(p) - loaded(p), fromInv = Math.min(S.inv[i], room);
   const buy = Math.max(0, Math.min(room - fromInv, Math.floor((S.cash + 1e-6) / TIERS[i].price)));
@@ -777,6 +786,9 @@ function renderTop() {
   setText('#statCash', money(S.cash)); setText('#statIncome', money(inc) + '/s'); setText('#statSats', int(sum(S.orbit)));
   if (inc !== ui.lastIncome) { if (inc > ui.lastIncome && !ui.quiet) { const el = $('#statIncome'); el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); } ui.lastIncome = inc; }
   setText('#muteBtn', S.muted ? 'Sound off' : 'Sound on');
+  const rb = $('#roomBtn'), has = !!(window.Room && window.Room.available);
+  if (rb.hidden === has) rb.hidden = !has;
+  setText('#roomBtn', S.roomOff ? 'Enter control room' : 'Dashboard view');
 }
 function renderAll() { renderTop(); renderScene(); renderStages(); renderFeed(); renderPanels(); }
 
@@ -851,6 +863,8 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) save(
 window.addEventListener('pagehide', save);
 // Small hook for balancing and testing from the browser console.
 // Read-only window for the 3D view (view3d.js).
-window.Game = { info: sceneInfo, get S() { return S; }, ui, TIERS, BASE, FLIGHT };
+window.Game = { info: sceneInfo, get S() { return S; }, ui, TIERS, BASE, FLIGHT, B_LABEL,
+  act(a, x) { if (ACT[a]) { Sfx.init(); ACT[a](x); renderAll(); } },
+  api: { money, int, secs, clockStr, pct, income, odds, sum, stageList, launchState, capFor, loaded, padPrep, padRefuel, padRecovery, boosterCost, pad, booster, focusMission } };
 window.__tycoon = { ui, FLIGHT, stepGame,  get state() { return S; }, advance, save, reset() { noSave = true; localStorage.removeItem(SAVE_KEY); location.reload(); } };
 })();

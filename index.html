@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Starlink Launch Tycoon</title>
+<meta name="description" content="Launch rockets, deploy satellites, land boosters and grow an orbital income empire.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <h1>Starlink Launch Tycoon</h1>
+  </div>
+  <div class="stats">
+    <div class="stat stat-cash"><span class="stat-label">Cash</span><span class="stat-value" id="statCash">$0</span></div>
+    <div class="stat"><span class="stat-label">Income</span><span class="stat-value" id="statIncome">$0/s</span></div>
+    <div class="stat"><span class="stat-label">Active sats</span><span class="stat-value" id="statSats">0</span></div>
+  </div>
+  <button class="btn btn-ghost" id="muteBtn" data-act="mute" aria-label="Toggle sound">SOUND ON</button>
+</header>
+
+<main id="layout">
+  <section id="left">
+    <div id="scene" data-view="orbit">
+      <img class="sv" data-img="orbit" src="assets/orbit.jpg" alt="">
+      <img class="sv" data-img="takeoff" src="assets/takeoff.jpg" alt="">
+      <img class="sv" data-img="flight" src="assets/flight.jpg" alt="">
+      <img class="sv" data-img="satellites" src="assets/satellites.jpg" alt="">
+      <img class="sv" data-img="landing" src="assets/landing.jpg" alt="">
+      <canvas id="orbitCanvas"></canvas>
+      <div class="streak" aria-hidden="true"></div>
+      <div id="sceneFx" aria-hidden="true"></div>
+      <div id="scenePop" aria-hidden="true"></div>
+      <div id="sceneTag"></div>
+      <div id="sceneCount"></div>
+      <div id="sceneCaption"></div>
+      <div id="summary" hidden></div>
+    </div>
+    <ol id="stages" aria-label="Mission stages"></ol>
+    <div class="feed-wrap">
+      <h2>Event feed</h2>
+      <ul id="feed" aria-live="polite"></ul>
+    </div>
+  </section>
+
+  <section id="right">
+    <nav id="tabs" role="tablist"></nav>
+    <div id="panel"></div>
+  </section>
+</main>
+
+<footer id="foot">
+  <span>Fan-made prototype. Not affiliated with or endorsed by SpaceX.</span>
+  <button class="btn btn-ghost btn-small" data-act="reset">Reset save</button>
+</footer>
+
+<script src="game.js"></script>
+</body>
+</html>

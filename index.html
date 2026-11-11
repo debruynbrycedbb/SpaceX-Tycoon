@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 <header id="topbar">
@@ -33,12 +33,15 @@
       <img class="sv" data-img="satellites" src="assets/satellites.jpg" alt="">
       <img class="sv" data-img="landing" src="assets/landing.jpg" alt="">
       <canvas id="orbitCanvas"></canvas>
+      <canvas id="gl"></canvas>
       <div class="streak" aria-hidden="true"></div>
       <div id="sceneFx" aria-hidden="true"></div>
       <div id="scenePop" aria-hidden="true"></div>
       <div id="sceneTag"></div>
       <div id="sceneCount"></div>
       <div id="sceneCaption"></div>
+      <div id="loadNote"></div>
+      <div id="hud"></div>
       <div id="summary" hidden></div>
     </div>
     <ol id="stages" aria-label="Mission stages"></ol>
@@ -55,10 +58,15 @@
 </main>
 
 <footer id="foot">
-  <span>Fan-made prototype. Not affiliated with or endorsed by SpaceX.</span>
+  <span>Fan-made prototype. Not affiliated with or endorsed by SpaceX. 3D models by Stanley Creative, rodrigoscar, Thor's Hammer and Malacodart on Sketchfab, CC BY 4.0. <a href="https://github.com/debruynbrycedbb/SpaceX-Tycoon#credits">Credits</a></span>
   <button class="btn btn-ghost btn-small" data-act="reset">Reset save</button>
 </footer>
 
-<script src="game.js"></script>
+<script src="game.js?v=12"></script>
+<!-- 3D mission view. If it cannot load, the game keeps working with the 2D art. -->
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module" src="view3d.js?v=12"></script>
 </body>
 </html>

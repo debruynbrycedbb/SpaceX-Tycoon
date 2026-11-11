@@ -1,2 +1,4 @@
 .DS_Store
 .claude/
+# Original model downloads. The game loads the web-sized copies in assets/models.
+3D Models/

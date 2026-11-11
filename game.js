@@ -831,12 +831,9 @@ document.addEventListener('pointerdown', e => { const el = e.target.closest && e
 for (const ev of ['pointerup', 'pointercancel']) document.addEventListener(ev, e => { const k = holds.get(e.pointerId); if (!k) return; holds.delete(e.pointerId); ui.keys[k] = [...holds.values()].includes(k); });
 document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('[data-hold]')) e.preventDefault(); });
 if (load()) {
-  const away = Math.min(OFFLINE_CAP, Math.max(0, (Date.now() - S.lastSeen) / 1000));
-  if (away > 2) {
-    const before = S.lifetime; ui.quiet = true; advance(away); ui.quiet = false;
-    const earned = S.lifetime - before;
-    log(`Welcome back. Your constellation earned ${money(earned)} while you were away (${clockStr(away)}).`, 'money');
-  }
+  // The company is paused while the game is closed: no income, timers or flights advance until it is opened again.
+  const away = Math.max(0, (Date.now() - S.lastSeen) / 1000);
+  if (away > 60) log(`Welcome back. Operations resumed where you left off after ${clockStr(away)} away.`);
   ui.pad = S.pads[0].id;
 } else {
   log('Company founded. 1 Falcon 9, 1 launch pad and 10 Starlink V1 satellites are ready.');

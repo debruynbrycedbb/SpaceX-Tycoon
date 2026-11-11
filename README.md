@@ -41,7 +41,7 @@ When you change `game.js`, `view3d.js` or `style.css`, bump the `?v=` number on 
 - **Economy:** every active satellite pays its tier income each second. Cash buys satellites, refuels ($60, 60 s), boosters, pads and upgrades.
 - **Tiers:** ten satellite tiers unlock from lifetime earnings.
 - **Risk:** the first flight is guaranteed. Later flights can fail at launch, landing or deployment, and the odds are shown before launch. If the company ever has no income and no way to fly, investors supply a booster and 10 satellites.
-- **Saving:** progress saves in the browser and earns income while away, capped at 8 hours.
+- **Saving:** progress saves in the browser every few seconds and when you close the tab. The game is paused while it is closed, so nothing is earned and no timers run until you open it again. A background tab that is still open keeps running.
 
 ## The control room
 
